@@ -71,7 +71,7 @@ export default function Navbar() {
           {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm text-slate-400">
-                Olá, <span className="text-primary-glow font-medium">{user.email.split("@")[0]}</span>
+                Olá, <span className="text-primary-glow font-medium">{user.name || user.email.split("@")[0]}</span>
               </span>
               <button
                 onClick={handleLogout}
@@ -124,9 +124,12 @@ export default function Navbar() {
           ))}
           <div className="flex gap-3 pt-2 border-t border-blue-900/30">
             {user ? (
-              <button onClick={handleLogout} className="text-sm text-slate-400 hover:text-white">
-                Sair
-              </button>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-400">Olá, <span className="text-primary-glow font-medium">{user.name || user.email.split("@")[0]}</span></span>
+                <button onClick={handleLogout} className="text-sm text-slate-400 hover:text-white">
+                  Sair
+                </button>
+              </div>
             ) : (
               <>
                 <Link to="/login" onClick={() => setMenuOpen(false)} className="text-sm text-slate-300">Entrar</Link>
