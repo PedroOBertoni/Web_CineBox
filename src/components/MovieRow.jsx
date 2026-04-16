@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { fetchByGenre, fetchTrending } from "../api/tmdb";
 import MovieCard from "./MovieCard";
 
+const CARD_WIDTH = 174; // largura do card + gap em px
+
 export default function MovieRow({ title, genreId, trending }) {
   const [movies, setMovies] = useState([]);
-  const rowRef = useRef(null);
+  const [offset, setOffset] = useState(0);
+  const [maxOffset, setMaxOffset] = useState(0);
+  const trackRef = useRef(null);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     if (trending) {
@@ -14,23 +19,26 @@ export default function MovieRow({ title, genreId, trending }) {
     }
   }, [genreId, trending]);
 
-  // Impede que o scroll vertical da página seja capturado pelo carrossel
+  // Calcula o offset máximo após os filmes carregarem
   useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    const onWheel = (e) => {
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault();
-        window.scrollBy({ top: e.deltaY, behavior: "auto" });
-      }
-    };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    if (!trackRef.current || !wrapperRef.current || movies.length === 0) return;
+    const trackW = trackRef.current.scrollWidth;
+    const wrapperW = wrapperRef.current.offsetWidth;
+    setMaxOffset(Math.max(0, trackW - wrapperW));
+    setOffset(0);
   }, [movies]);
 
-  const scroll = (dir) => rowRef.current?.scrollBy({ left: dir * 600, behavior: "smooth" });
+  const scroll = (dir) => {
+    setOffset((prev) => {
+      const next = prev + dir * CARD_WIDTH * 4;
+      return Math.max(0, Math.min(next, maxOffset));
+    });
+  };
 
   if (movies.length === 0) return null;
+
+  const canLeft = offset > 0;
+  const canRight = offset < maxOffset;
 
   return (
     <div className="px-6 md:px-12 group/row">
@@ -40,29 +48,44 @@ export default function MovieRow({ title, genreId, trending }) {
       </div>
 
       <div className="relative">
-        <button
-          onClick={() => scroll(-1)}
-          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-10 h-10 glass rounded-full flex items-center justify-center opacity-0 group-hover/row:opacity-100 hover:bg-[#1D4ED8]/30 transition-all shadow-glow text-xl"
-        >‹</button>
+        {/* Botão esquerda */}
+        {canLeft && (
+          <button
+            onClick={() => scroll(-1)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-20 w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#1D4ED8]/30 transition-all shadow-glow text-xl"
+          >‹</button>
+        )}
 
+        {/* Wrapper — overflow-x hidden corta o track, overflow-y visible preserva o scale */}
         <div
-          ref={rowRef}
-          className="flex gap-3 overflow-x-auto hide-scrollbar pb-2"
-          style={{ overscrollBehaviorX: "contain" }}
+          ref={wrapperRef}
+          style={{ overflowX: "clip", overflowY: "visible", paddingTop: "6px", marginTop: "-6px" }}
         >
-          {movies.map((movie) => (
-            <div key={movie.id} className="min-w-[150px] md:min-w-[170px] flex-shrink-0">
-              <MovieCard movie={movie} />
-            </div>
-          ))}
+          <div
+            ref={trackRef}
+            className="flex gap-3 pb-2 transition-transform duration-300 ease-out"
+            style={{ transform: `translateX(-${offset}px)` }}
+          >
+            {movies.map((movie) => (
+              <div key={movie.id} className="min-w-[162px] md:min-w-[170px] flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+          </div>
         </div>
 
-        <button
-          onClick={() => scroll(1)}
-          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-10 h-10 glass rounded-full flex items-center justify-center opacity-0 group-hover/row:opacity-100 hover:bg-[#1D4ED8]/30 transition-all shadow-glow text-xl"
-        >›</button>
+        {/* Botão direita */}
+        {canRight && (
+          <button
+            onClick={() => scroll(1)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-10 h-10 glass rounded-full flex items-center justify-center hover:bg-[#1D4ED8]/30 transition-all shadow-glow text-xl"
+          >›</button>
+        )}
 
-        <div className="absolute right-0 top-0 bottom-2 w-16 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none" />
+        {/* Fade lateral direita */}
+        {canRight && (
+          <div className="absolute right-0 top-0 bottom-2 w-16 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10" />
+        )}
       </div>
     </div>
   );
