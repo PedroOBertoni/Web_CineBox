@@ -3,7 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Navbar from "../components/Navbar";
 
-const PLANS = ["Básico — R$ 19,90/mês", "Intermediário — R$ 29,90/mês", "Avançado — R$ 49,90/mês"];
+const PLANS = [
+  { value: "basico", label: "Básico", price: "R$ 19,90/mês", desc: "HD · 1 tela" },
+  { value: "intermediario", label: "Intermediário", price: "R$ 29,90/mês", desc: "Full HD · 2 telas" },
+  { value: "avancado", label: "Avançado", price: "R$ 49,90/mês", desc: "4K · 4 telas" },
+];
 
 export default function Register() {
   const { register } = useContext(AuthContext);
@@ -76,18 +80,41 @@ export default function Register() {
               ))}
 
               <div>
-                <label className="text-slate-400 text-xs font-medium mb-1.5 block">Plano escolhido</label>
-                <select
-                  value={form.plan}
-                  onChange={set("plan")}
-                  className="w-full px-4 py-3 bg-[#111827] border border-slate-700 rounded-xl text-white focus:outline-none focus:border-[#1D4ED8] transition-all text-sm appearance-none cursor-pointer"
-                >
-                  <option value="" disabled>Selecione um plano</option>
-                  {PLANS.map((p) => (
-                    <option key={p} value={p}>{p}</option>
-                  ))}
-                </select>
-                <Link to="/planos" className="text-[#60A5FA] text-xs mt-1 inline-block hover:underline">
+                <label className="text-slate-400 text-xs font-medium mb-2 block">Plano escolhido</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {PLANS.map((p) => {
+                    const active = form.plan === p.value;
+                    return (
+                      <button
+                        key={p.value}
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, plan: p.value }))}
+                        className="relative flex flex-col items-center text-center px-2 py-3 rounded-xl border transition-all duration-200"
+                        style={{
+                          background: active ? "rgba(29,78,216,0.15)" : "#111827",
+                          borderColor: active ? "#1D4ED8" : "#334155",
+                          boxShadow: active ? "0 0 12px rgba(29,78,216,0.3)" : "none",
+                        }}
+                      >
+                        {active && (
+                          <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-[#1D4ED8] rounded-full flex items-center justify-center">
+                            <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+                              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </span>
+                        )}
+                        <span className={`text-xs font-semibold mb-0.5 ${active ? "text-white" : "text-slate-300"}`}>
+                          {p.label}
+                        </span>
+                        <span className={`text-xs font-bold ${active ? "text-[#60A5FA]" : "text-slate-400"}`}>
+                          {p.price}
+                        </span>
+                        <span className="text-slate-600 text-xs mt-0.5">{p.desc}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <Link to="/planos" className="text-[#60A5FA] text-xs mt-2 inline-block hover:underline">
                   Ver detalhes dos planos →
                 </Link>
               </div>

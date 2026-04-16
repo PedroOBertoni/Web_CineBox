@@ -50,6 +50,17 @@ body {
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Corrige autocomplete do browser sobrescrevendo o background dos inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 999px #111827 inset !important;
+  box-shadow: 0 0 0 999px #111827 inset !important;
+  -webkit-text-fill-color: #E2E8F0 !important;
+  caret-color: #E2E8F0;
+}
+
 /* Glassmorphism */
 .glass {
   background: rgba(13, 21, 38, 0.75);
