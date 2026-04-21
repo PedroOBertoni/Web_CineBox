@@ -1,7 +1,9 @@
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import HeroBanner from "../components/HeroBanner";
 import MovieRow from "../components/MovieRow";
 import Footer from "../components/Footer";
+import MovieModal from "../components/MovieModal";
 
 // IDs de gênero oficiais do TMDB
 const ROWS = [
@@ -16,16 +18,19 @@ const ROWS = [
 ];
 
 export default function Home() {
+  const [selectedId, setSelectedId] = useState(null);
+
   return (
     <div className="min-h-screen bg-[#060B18]">
       <Navbar />
       <HeroBanner />
       <div className="space-y-10 py-8">
         {ROWS.map((row) => (
-          <MovieRow key={row.title} {...row} />
+          <MovieRow key={row.title} {...row} onMovieClick={setSelectedId} />
         ))}
       </div>
       <Footer />
+      {selectedId && <MovieModal movieId={selectedId} onClose={() => setSelectedId(null)} />}
     </div>
   );
 }

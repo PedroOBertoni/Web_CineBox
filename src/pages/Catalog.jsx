@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
 import MovieCard from "../components/MovieCard";
 import Footer from "../components/Footer";
+import MovieModal from "../components/MovieModal";
 import { fetchByGenre, fetchPopular, searchMovies } from "../api/tmdb";
 
 const GENRES = [
@@ -86,9 +87,9 @@ export default function Catalog() {
   const [searchPages, setSearchPages] = useState(1);
   const [searchPage, setSearchPage] = useState(1);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
-  // Carrega filmes por gênero/populares
+  const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     if (isSearching) return;
     setLoading(true);
@@ -185,7 +186,7 @@ export default function Catalog() {
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
               {displayed.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
+                <MovieCard key={movie.id} movie={movie} onClick={setSelectedId} />
               ))}
             </div>
             <Pagination page={currentPage} totalPages={currentTotal} onChange={handlePageChange} />
@@ -194,6 +195,7 @@ export default function Catalog() {
       </div>
 
       <Footer />
+      {selectedId && <MovieModal movieId={selectedId} onClose={() => setSelectedId(null)} />}
     </div>
   );
 }

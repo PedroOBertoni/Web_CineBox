@@ -4,7 +4,7 @@ import MovieCard from "./MovieCard";
 
 const CARD_WIDTH = 164;
 
-export default function MovieRow({ title, genreId, trending }) {
+export default function MovieRow({ title, genreId, trending, onMovieClick }) {
   const [movies, setMovies] = useState([]);
   const [offset, setOffset] = useState(0);
   const [maxOffset, setMaxOffset] = useState(0);
@@ -68,7 +68,7 @@ export default function MovieRow({ title, genreId, trending }) {
           >
             {movies.map((movie) => (
               <div key={movie.id} className="w-[150px] md:w-[160px] flex-shrink-0">
-                <MovieCard movie={movie} />
+                <MovieCard movie={movie} onClick={onMovieClick} />
               </div>
             ))}
           </div>

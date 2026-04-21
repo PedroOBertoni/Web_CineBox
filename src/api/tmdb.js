@@ -59,5 +59,5 @@ export const searchMovies = async (query, page = 1) => {
 };
 
 export const fetchMovieDetails = async (id) => {
-  return get(`/movie/${id}`);
+  return get(`/movie/${id}`, { append_to_response: "credits,videos" });
 };

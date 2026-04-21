@@ -1,6 +1,6 @@
 import { IMG } from "../api/tmdb";
 
-export default function MovieCard({ movie }) {
+export default function MovieCard({ movie, onClick }) {
   // Não renderiza se não tiver poster
   if (!movie?.poster_path) return null;
 
@@ -9,7 +9,7 @@ export default function MovieCard({ movie }) {
   const rating = movie.vote_average ? movie.vote_average.toFixed(1) : null;
 
   return (
-    <div className="relative group cursor-pointer">
+    <div className="relative group cursor-pointer" onClick={() => onClick?.(movie.id)}>
       <div className="relative overflow-hidden rounded-xl shadow-lg group-hover:shadow-glow transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1">
         <img
           src={`${IMG}${movie.poster_path}`}
