@@ -125,8 +125,20 @@ O diagrama abaixo ilustra a arquitetura geral do CineBox, mostrando o fluxo de d
 
 > _Prints da interface da aplicação em funcionamento._
 
-<!-- Adicione os prints abaixo seguindo o mesmo padrão: -->
-<!-- ![Descrição](./public/assets/screenshots/nome-do-arquivo.png) -->
+### 🏠 Página Inicial
+![Home](./.github/screenshots/Home.jpeg)
+
+### 🎬 Catálogo
+![Catálogo](./.github/screenshots/Catalogo.jpeg)
+
+### 💳 Planos de Assinatura
+![Planos](./.github/screenshots/Planos.jpeg)
+
+### 🔐 Login
+![Login](./.github/screenshots/Login.jpeg)
+
+### 📝 Cadastro
+![Cadastro](./.github/screenshots/Cadastro.jpeg)
 
 ---
 
